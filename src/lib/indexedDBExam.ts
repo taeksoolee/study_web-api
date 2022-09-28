@@ -8,15 +8,17 @@ const isExistIndexedDB = () => !!window.indexedDB;
 const openRequest = (name: string, version: number) => indexedDB.open(name, version);
 const closeRequest = (req: IDBRequest | null) => req && req.result.close();
 const getDatabases = async () => await indexedDB.databases(); 
-const delDatabases = (name: string) => indexedDB.deleteDatabase(name).result.close();
+const delDatabases = (name: string) => indexedDB.deleteDatabase(name);
 
 
 type Global = {
-  dbRequest: IDBOpenDBRequest | null
+  dbRequest: IDBOpenDBRequest | null,
+  database: IDBDatabase | null
 }
 
 const global: Global = {
   dbRequest: null,
+  database: null,
 }
 
 // end indexed DB Api methods
@@ -102,7 +104,10 @@ customElements.define('show-indexeddb-databases', class extends HTMLElementWithC
 
       for(const db of databases) {
         closeRequest(global.dbRequest);
-        db.name && delDatabases(db.name);
+        if(db.name) {
+          const dbRequest = delDatabases(db.name);
+          console.log(dbRequest);
+        }
       }
 
       await this.renderItems();
