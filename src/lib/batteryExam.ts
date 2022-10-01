@@ -1,6 +1,6 @@
 
 import { html } from "lit-html";
-import { Button, renderInRoot } from "./_dom";
+import { Button, renderInRoot } from "./utils/dom";
 
 export default () => {
   return Button('battery', main);

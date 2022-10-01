@@ -1,5 +1,5 @@
 import { render, TemplateResult } from "lit-html";
-import { getRandomNumber } from "./_utils";
+import { getRandomNumber } from "./number";
 
 /**
  * 컴포넌트 내에 contentId 클래스를 가진 element가 있다고 가정한다.
