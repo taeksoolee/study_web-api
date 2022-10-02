@@ -2,6 +2,8 @@ import { getByChecker, getById, openIndexedDb } from "../lib/indexedDB";
 import { Button } from "../lib/utils/dom";
 
 const main = async () => {
+  console.log('🚀 indexedDB');  
+
   const storeNames = [
     'taeksoo/my-store',
   ]
