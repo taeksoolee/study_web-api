@@ -56,6 +56,13 @@ export const getByChecker = <D>(db: IDBDatabase, storeNames: string[], storeName
   });
 }
 
+export const clearDatabase = (db: IDBDatabase, storeNames: string[], storeName: string) => {
+  const t = db.transaction(storeNames, 'readwrite');
+  const s = t.objectStore(storeName);
+
+  s.clear();
+}
+
 export namespace IndexedDB {
   export type DBConfig = {
     name: string, 
@@ -77,6 +84,8 @@ export class IndexedDBHelper<D> {
   async init(config: IndexedDB.DBConfig) {
     this._storeName = config.store.name;
     this._database = await openIndexedDb(config.name, config.version, [this._storeName]);
+
+    return this;
   }
 
   get database() {
@@ -119,5 +128,14 @@ export class IndexedDBHelper<D> {
 
     const item = await getById<D>(database, [this._storeName], this._storeName, id);
     return item;
+  }
+
+  async clear() {
+    const database = this._database;
+    if (!this._checkDatabase(database)) {
+      return null;
+    }
+
+    clearDatabase(database, [this._storeName], this._storeName);
   }
 }

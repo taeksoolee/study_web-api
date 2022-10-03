@@ -1,4 +1,4 @@
 interface ExamItem {
-  foo: number,
-  bar: number
+  foo: string,
+  bar: string
 }

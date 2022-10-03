@@ -1,9 +1,8 @@
-import { getByChecker, getById, openIndexedDb } from "../lib/indexedDB";
-import { Button } from "../lib/utils/dom";
+import { html } from "lit-html";
+import { getByChecker, getById, IndexedDBHelper, openIndexedDb } from "../lib/indexedDB";
+import { Button, renderInRoot } from "../lib/utils/dom";
 
-const main = async () => {
-  console.log('🚀 indexedDB');  
-
+const mainWithRawFunctions = async () => {
   const storeNames = [
     'taeksoo/my-store',
   ]
@@ -32,6 +31,71 @@ const main = async () => {
   );
 
   console.log(r);
+}
+
+const main = async () => {
+  console.log('🚀 indexedDB');  
+
+  const dbHelper = await new IndexedDBHelper<ExamItem>().init({
+    name: 'my-test-db',
+    version: 1,
+    store: {
+      name: 'taeksoo/my-store',
+    }
+  });
+
+  const addItem = (e: Event) => {
+    e.preventDefault();
+    const $foo = (window as any).AddIndexedDBForm.foo as HTMLInputElement;
+    const $bar = (window as any).AddIndexedDBForm.bar as HTMLInputElement;
+
+    const item: ExamItem = {
+      foo: $foo.value,
+      bar: $bar.value
+    }
+
+    dbHelper.add(item);
+    $foo.value = '';
+    $bar.value = '';
+  }
+
+  const addForm = html`
+    <form name="AddIndexedDBForm" @submit="${addItem}">
+      <h5>Add Form</h5>
+      <div>
+        <label for="foo">foo</label>
+        <input id="foo" name="foo" />
+      </div>
+      <div>
+        <label for="bar">bar</label>
+        <input id="bar" name="bar" />
+      </div>
+      <button type="submit">Add</button>
+    </form>
+  `;
+
+  const clearDatabase = () => {
+    console.log('clear!!');
+    dbHelper.clear();
+  }
+
+  const clearButton = html`
+    <button @click="${clearDatabase}">Clear</button>
+  `
+
+  renderInRoot(html`
+    ${addForm}
+    <hr />
+    ${clearButton}
+  `);
+
+  // await helper.add({
+  //   foo: 1,
+  //   bar: 2,
+  // });
+
+  const item = await dbHelper.getById(4);
+  console.log(item);
 }
 
 export default () => {
