@@ -1,5 +1,13 @@
 import { Nullable } from "./types/utils";
 
+/**
+ * 새로운 indexedDB를 열어 Database 객체를 반환한다.
+ * 오픈된 database가 새로운 버전일 경우 store를 생성한다.
+ * @param name - database name
+ * @param version - database version
+ * @param storeNames  - store name list
+ * @returns IndexedDB Database
+ */
 export const openIndexedDb = (name: string, version: number, storeNames: string[]) => {
   return new Promise<IDBDatabase>((resolve, reject) => {
     const req: IDBOpenDBRequest = indexedDB.open(name, version);
@@ -18,13 +26,27 @@ export const openIndexedDb = (name: string, version: number, storeNames: string[
   })
 }
 
+/**
+ * database store에 data를 추가한다.
+ * @param db - IndexedDB Database
+ * @param storeNames - transaction store name list
+ * @param storeName - target store names
+ * @param data - data to add
+ */
 export const addObject = async <D>(db: IDBDatabase, storeNames: string[], storeName: string, data: D) => {
   const t = db.transaction(storeNames, 'readwrite');
   const store = t.objectStore(storeName);
   store.add(data);
   t.commit();
 }
-
+/**
+ * databse store의 데이터중 id가 일치하는 데이터를 반환한다.
+ * @param db 
+ * @param storeNames 
+ * @param storeName 
+ * @param id 
+ * @returns 
+ */
 export const getById = async <D>(db: IDBDatabase, storeNames: string[], storeName: string, id: number) => {
   return new Promise<D | null>((resolve, _reject) => {
     db.transaction(storeNames).objectStore(storeName)
@@ -34,6 +56,14 @@ export const getById = async <D>(db: IDBDatabase, storeNames: string[], storeNam
   })
 }
 
+/**
+ * databse store의 데이터중 데이터를 check하여 true를 반환하는 데이터들를 반환한다.
+ * @param db 
+ * @param storeNames 
+ * @param storeName 
+ * @param checker 
+ * @returns 
+ */
 export const getByChecker = <D>(db: IDBDatabase, storeNames: string[], storeName: string, checker: (item: D) => boolean) => {
   return new Promise<any[]>(function(resolve, reject){
     const r: D[] = [];
@@ -56,6 +86,12 @@ export const getByChecker = <D>(db: IDBDatabase, storeNames: string[], storeName
   });
 }
 
+/**
+ * databse store의 모든 데이터를 삭제한다.
+ * @param db 
+ * @param storeNames 
+ * @param storeName 
+ */
 export const clearDatabase = (db: IDBDatabase, storeNames: string[], storeName: string) => {
   const t = db.transaction(storeNames, 'readwrite');
   const s = t.objectStore(storeName);
