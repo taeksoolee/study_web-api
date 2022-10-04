@@ -73,7 +73,7 @@ export namespace IndexedDB {
   }
 }
 
-export class IndexedDBHelper<D> {
+export class IndexedDBStore<D> {
   private _database: Nullable<IDBDatabase> = null;
   private _storeName: string = '';
 

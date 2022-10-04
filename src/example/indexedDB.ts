@@ -1,5 +1,5 @@
 import { html } from "lit-html";
-import { getByChecker, getById, IndexedDBHelper, openIndexedDb } from "../lib/indexedDB";
+import { getByChecker, getById, IndexedDBStore, openIndexedDb } from "../lib/indexedDB";
 import { Button, renderInRoot } from "../lib/utils/dom";
 
 const mainWithRawFunctions = async () => {
@@ -36,7 +36,7 @@ const mainWithRawFunctions = async () => {
 const main = async () => {
   console.log('🚀 indexedDB');  
 
-  const dbHelper = await new IndexedDBHelper<ExamItem>().init({
+  const dbHelper = await new IndexedDBStore<ExamItem>().init({
     name: 'my-test-db',
     version: 1,
     store: {
@@ -75,7 +75,6 @@ const main = async () => {
   `;
 
   const clearDatabase = () => {
-    console.log('clear!!');
     dbHelper.clear();
   }
 
